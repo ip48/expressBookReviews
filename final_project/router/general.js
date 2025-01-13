@@ -37,35 +37,95 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
+// public_users.get('/',function (req, res) {
+
+//   //Write your code here
+//   res.send(JSON.stringify({books}, null, 4));
+// });
+// Get the book list available in the shop
 public_users.get('/',function (req, res) {
-  //Write your code here
-  res.send(JSON.stringify({books}, null, 4));
+    
+    let booksPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(books)
+          },6000)
+    });
+    booksPromise.then((books) => {
+        res.send(JSON.stringify({books}, null, 4));
+    }).catch((error) => {
+        res.status(500).send("Error in fetching books");
+    });
+    
 });
 
+
 // Get book details based on ISBN
+// public_users.get('/isbn/:isbn',function (req, res) {
+//   //Write your code here
+//   let isbn = req.params.isbn;
+//   //todo: error handle
+//   let bookFiltered = books[isbn];
+//   res.send(bookFiltered);
+// });
+
 public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  let isbn = req.params.isbn;
-  //todo: error handle
-  let bookFiltered = books[isbn];
-  res.send(bookFiltered);
-});
+    //Write your code here
+    let isbn = req.params.isbn;
+    //For simplicity: I skip error handling regarding isbn value.
+
+    let booksPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(books[isbn])
+          },6000)
+    });
+    booksPromise.then((book) => {
+        res.send(book);
+    }).catch((error) => {
+        res.status(500).send("Error");
+    });
+  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
   let author = req.params.author;
-  let booksF = Object.values(books).filter(book => book.author === author);
-  res.send(booksF);
-  //res.send(JSON.stringify(booksF, null, 4));
-});
+ 
+  let booksPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve(Object.values(books).filter(book => book.author === author))
+        },6000)
+    });
+    booksPromise.then((bookFilterted) => {
+        res.send(bookFilterted);
+    }).catch((error) => {
+        res.status(500).send("Error");
+    });
+}); 
+
+
+// Get all books based on title
+// public_users.get('/title/:title',function (req, res) {
+//   let title = req.params.title;
+//   let booksF = Object.values(books).filter(book => book.title === title);
+//   res.send(booksF);
+// });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  let title = req.params.title;
-  let booksF = Object.values(books).filter(book => book.title === title);
-  res.send(booksF);
-});
+    let title = req.params.title;
+
+    let booksPromise = new Promise((resolve,reject) => {
+        setTimeout(() => {
+            resolve( Object.values(books).filter(book => book.title === title))
+        },6000)
+    });
+    booksPromise.then((bookFilterted) => {
+        res.send(bookFilterted);
+    }).catch((error) => {
+        res.status(500).send("Error");
+    });
+
+  });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
